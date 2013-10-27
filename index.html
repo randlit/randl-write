@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RANDL API</title>
+</head>
+<body>
+    <div>
+        <h1>Create</h1>
+        <form method="post" action="/create">
+            <input placeholder="description" />
+            <input type="submit" />
+        </form>
+    </div>
+
+    <div>
+        <h1>Remove</h1>
+        <form method="post" action="/remove">
+            <input type="number" placeholder="uuid" />
+            <input type="submit" />
+        </form>
+    </div>
+
+    <div>
+        <h1>Check-out</h1>
+        <form method="post" action="/checkout">
+            <input type="number" placeholder="uuid" />
+            <input type="submit" />
+        </form>
+    </div>
+
+    <div>
+        <h1>Check-out</h1>
+        <form method="post" action="/checkin">
+            <input type="number" placeholder="uuid" />
+            <input type="submit" />
+        </form>
+    </div>
+</body>
+</html>
