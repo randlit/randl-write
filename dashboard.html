@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <template class="js-items-list__template">
+        {{#hits}}
+            <div>{{_source.description}}, {{_source.checkedOut}}</div>
+        {{/hits}}
+    </template>
+
+    <div class="js-items-list"></div>
+    
+    <script src="/assets/bower_components/hogan.js/web/builds/2.0.0/hogan-2.0.0.min.js"></script>
+    <script src="/assets/bower_components/jquery/jquery.min.js"></script>
+    <script src="/assets/dashboard.js"></script>
+</body>
+</html>

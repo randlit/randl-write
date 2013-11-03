@@ -1,0 +1,10 @@
+{
+  "name": "randl-write",
+  "version": "0.0.1",
+  "main": "index.html",
+  "dependencies": {
+    "qrcodejs": "https://github.com/davidshimjs/qrcodejs.git",
+    "jquery": "~2.0.3",
+    "hogan.js": "~3.0.0"
+  }
+}

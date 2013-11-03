@@ -1,10 +1,25 @@
-var express = require( "express" );
-var amqp = require( "amqp" );
-var uuid = require( "node-uuid" );
-var path = require( "path" );
-var server = express();
+var express         = require( "express" );
+var amqp            = require( "amqp" );
+var uuid            = require( "node-uuid" );
+var path            = require( "path" );
+var httpProxy       = require( "http-proxy" );
+var routingProxy    = new httpProxy.RoutingProxy();
 
-var url = process.env.CLOUDAMQP_URL || "amqp://localhost";
+function proxy ( pattern, host, port ) {
+    
+    return function ( req, res, next ) {
+        if ( req.url.match( pattern ) ) {
+            routingProxy.proxyRequest( req, res, {
+                host: host,
+                port: port
+            });
+        } else {
+            next();
+        }
+    }
+}
+
+var url = process.env.CLOUDAMQP_URL || "amqp://134.34.14.126";
 var implOpts = {
     reconnect: true,
     reconnectBackoffStrategy: "linear",
@@ -16,65 +31,64 @@ var exchange;
 conn.on( "ready", function () {
     exchange = conn.exchange( "" );
     queue = conn.queue( "randl", {}, function () {
-        queue.subscribe( function ( msg ) { console.log( msg.body ) });
+        queue.subscribe( function ( msg ) { console.log( msg.body ) } );
     });
 })
 
+var server = express();
 server.use( express.bodyParser() );
+server.use( proxy( "/randl*", "134.34.14.126", 9200 ) );
+server.use( "/assets", express.static( __dirname ) );
 
 
 // POST
 server.post( "/create", function ( req, res, next ) {
 
+    var body = {
+        description: req.body.description,
+        checkedOut: false
+    }
+
     var id = uuid.v4();
 
     exchange.publish( queue.name, {
         id: id,
-        type: "create",
-        body: req.body
+        event: "update",
+        body: body
     });
 
     res.end( id );
-});
-
-server.post( "/remove", function ( req, res, next ) {
-
-    exchange.publish( queue.name, {
-        id: req.body.id,
-        type: "remove"
-    });
-
-    res.end();
 });
 
 server.post( "/update", function ( req, res, next ) {
 
     exchange.publish( queue.name, {
         id: req.body.id,
-        type: "update",
+        event: "update",
         body: req.body
     });
 
     res.end();
 });
 
-server.post( "/book", function ( req, res, next ) {
+server.post( "/remove", function ( req, res, next ) {
 
     exchange.publish( queue.name, {
         id: req.body.id,
-        type: "book",
-        body: req.body
+        event: "remove",
+        body: null
     });
 
     res.end();
 });
+
 
 server.post( "/checkout", function ( req, res, next ) {
 
     exchange.publish( queue.name, {
         id: req.body.id,
-        type: "checkout",
-        body: req.body
+        event: "checkout",
+        body: null
     });
 
     res.end();
@@ -84,26 +98,20 @@ server.post( "/checkin", function ( req, res, next ) {
 
     exchange.publish( queue.name, {
         id: req.body.id,
-        type: "checkin",
-        body: req.body
+        event: "checkin",
+        body: null
     });
 
     res.end();
 });
 
-server.post( "/cancel", function ( req, res, next ) {
 
-    exchange.publish( queue.name, {
-        id: req.body.id,
-        type: "cancel",
-        body: req.body
-    });
-
-    res.end();
-});
-
-server.get( "*", function ( req, res, next ) {
+server.get( "/", function ( req, res, next ) {
     res.sendfile( path.join( __dirname, "index.html" ) );
+});
+
+server.get( "/dashboard", function ( req, res, next ) {
+    res.sendfile( path.join( __dirname, "dashboard.html" ) );
 });
 
 server.listen( 3000 );
