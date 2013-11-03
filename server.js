@@ -19,7 +19,7 @@ function proxy ( pattern, host, port ) {
     }
 }
 
-var url = process.env.CLOUDAMQP_URL || "amqp://134.34.14.126";
+var url = process.env.CLOUDAMQP_URL || "amqp://localhost";
 var implOpts = {
     reconnect: true,
     reconnectBackoffStrategy: "linear",
@@ -114,4 +114,8 @@ server.get( "/dashboard", function ( req, res, next ) {
     res.sendfile( path.join( __dirname, "dashboard.html" ) );
 });
 
-server.listen( 3000 );
+var port = process.env.PORT || 3001;
+
+server.listen( port, function () {
+    console.log( "Listening on " + port );
+});
