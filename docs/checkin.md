@@ -1,5 +1,5 @@
 # /checkin
-Performance a checkin on an item. Can only be done with items that are currently checked out.
+Performs a checkin on an item. Can only be done with items that are currently checked out.
 
 
 
