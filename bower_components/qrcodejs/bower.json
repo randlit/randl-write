@@ -1,9 +1,0 @@
-{
-  "name": "qrcodejs",
-  "version": "0.0.0",
-  "commit": "51abe3156aa816ee8ee23452c69ef798265cafd0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/davidshimjs/qrcodejs.git"
-  }
-}

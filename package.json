@@ -11,8 +11,7 @@
   "readmeFilename": "README.md",
   "dependencies": {
     "amqp": "~0.1.7",
-    "express": "~3.4.3",
-    "node-uuid": "~1.4.1",
-    "http-proxy": "~0.10.3"
+    "express": "~3",
+    "node-uuid": "~1.4.1"
   }
 }
